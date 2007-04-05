@@ -51,18 +51,17 @@ class Recipe(object):
             assert table_names, "No application tables found."
             self.update_schema(current_generation)
         else:
-            cur = self.conn.cursor()
-            cur.execute("CREATE TABLE %s (generation INTEGER)" % 
-                        GENERATION_TABLE)
-            cur.execute("INSERT INTO %s VALUES (0)" % 
-                        GENERATION_TABLE)
-            cur.close()
             if table_names:
+                self.install_generation_table()
                 self.update_schema(0)
             else:
+                assert pkg_resources.resource_exists(self.schema, 'init.sql'), (
+                    'Initial generation script init.sql not found.')
                 ret_code = self.call_psql(pkg_resources.resource_filename(
                         self.schema, 'init.sql'))
+                
                 assert ret_code == 0, 'Initial generation failed.'
+                self.install_generation_table()
                 self.update_generation(self.get_newest_generation())
         return []
 
@@ -78,17 +77,19 @@ class Recipe(object):
                 self.schema, precondition_mod+".py"):
                 mod = __import__('%s.%s' % (self.schema, precondition_mod))
                 mod.precondition(self.conn)
-            ret_code = self.psql_call(
+            ret_code = self.call_psql(
                 pkg_resources.resource_filename(
                     self.schema, 'update%s.sql' % next_generation))
             assert ret_code == 0, ('Update generation %s failed.' %
                                    next_generation)
             self.update_generation(next_generation)
+            self.conn.commit()
             next_generation += 1
 
     def call_psql(self, filename):
         ret_code = subprocess.call(
-            ["psql", "-f", filename] + self.psql_options)
+            ["psql", "-f", filename, "-v", "ON_ERROR_STOP=true"] + 
+            self.psql_options)
         return ret_code
 
     def get_table_names(self):
@@ -119,6 +120,7 @@ class Recipe(object):
         cur = self.conn.cursor()
         cur.execute("UPDATE %s SET generation = %s" % (GENERATION_TABLE, new))
         cur.close()
+        self.conn.commit()
 
     def get_newest_generation(self):
         max_generation = 0
@@ -130,3 +132,11 @@ class Recipe(object):
             if generation > max_generation:
                 max_generation = generation
         return max_generation
+
+    def install_generation_table(self):
+        cur = self.conn.cursor()
+        cur.execute("CREATE TABLE %s (generation INTEGER)" % GENERATION_TABLE)
+        cur.execute("INSERT INTO %s VALUES (0)" % GENERATION_TABLE)
+        cur.close()
+        self.conn.commit()
+
