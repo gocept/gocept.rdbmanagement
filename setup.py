@@ -18,7 +18,7 @@ setup(
     zip_safe=False,
     license='ZPL',
     install_requires=[
-        'zc.buildout', 'setuptools', 'psycopg2'],
+        'zc.buildout', 'setuptools', 'psycopg2', 'zc.recipe.egg'],
     entry_points={
         'zc.buildout': [
              'default = %s.recipe:Recipe' % name,

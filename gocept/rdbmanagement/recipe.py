@@ -3,10 +3,12 @@
 # See also LICENSE.txt
 # $Id$
 
-import subprocess
-import psycopg2
 import pkg_resources
 import re
+import subprocess
+
+import psycopg2
+import zc.recipe.egg
 
 
 GENERATION_TABLE = "_generation"
@@ -18,24 +20,28 @@ class Recipe(object):
     Configuration options:
 
       dbname ... database name
-      schema ... resource path of schema generations XXX
-    
+      schema ... setuptools resource path of schema generations
+      eggs ... list of eggs that are required for the schema path
+
     """
 
     def __init__(self, buildout, name, options):
         self.options = options
         self.buildout = buildout
         self.name = name
-        self.egg, path = options['schema'].split(':')
-        self.schema = "%s.%s" % (self.egg, path)
+        self.schema = options['schema']
         self.dsn = "dbname=%s" % options['dbname']
         self.psql_options = [options['dbname']]
 
     def install(self):
-        pkg_resources.require(self.egg)
-        self.conn = psycopg2.connect(self.dsn)
+        # Use the egg recipe to make sure we have the right eggs available
+        # and activate the eggs in the `global` working set.
+        egg = zc.recipe.egg.Egg(self.buildout, self.name, self.options)
+        distributions, ws = egg.working_set()
+        for dist in ws:
+            pkg_resources.working_set.add(dist)
 
-        import pdb; pdb.set_trace() #############################
+        self.conn = psycopg2.connect(self.dsn)
 
         table_names = self.get_table_names()
         has_generation_table = GENERATION_TABLE in table_names
@@ -59,7 +65,7 @@ class Recipe(object):
                 assert ret_code == 0, 'Initial generation failed.'
                 self.update_generation(self.get_newest_generation())
         return []
-        
+
     def update(self):
         return self.install()
 
@@ -99,7 +105,7 @@ class Recipe(object):
         table_names = [x[0] for x in cur.fetchall()]
         cur.close()
         return table_names
-    
+
     def get_current_generation(self):
         cur = self.conn.cursor()
         cur.execute("SELECT generation FROM %s" % GENERATION_TABLE)
@@ -108,7 +114,7 @@ class Recipe(object):
         assert len(generation) < 2, 'More than one row in generations table.'
         cur.close()
         return generation[0][0]
-    
+
     def update_generation(self, new):
         cur = self.conn.cursor()
         cur.execute("UPDATE %s SET generation = %s" % (GENERATION_TABLE, new))
