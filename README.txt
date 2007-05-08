@@ -75,7 +75,10 @@ updateX.sql
 preconditionX.py
 ----------------
 
+ * Script must contain a function called ``precondition`` which takes one
+   parameter which is an open DB-API2-connection to the database.
+
  * Precondition script X will be run on a database at generation X-1.
 
- * Precondition script X has to raise an Exception to indicate that the
+ * Precondition script X has to raise an exception to indicate that the
    database MUST not be updated to generation X.

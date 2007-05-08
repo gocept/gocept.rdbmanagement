@@ -75,7 +75,9 @@ class Recipe(object):
             precondition_mod = 'precondition%s' % next_generation
             if pkg_resources.resource_exists(
                 self.schema, precondition_mod+".py"):
-                mod = __import__('%s.%s' % (self.schema, precondition_mod))
+                mod = __import__(
+                    '%s.%s' % (self.schema, precondition_mod), globals(), 
+                    locals(), [precondition_mod])
                 mod.precondition(self.conn)
             ret_code = self.call_psql(
                 pkg_resources.resource_filename(
