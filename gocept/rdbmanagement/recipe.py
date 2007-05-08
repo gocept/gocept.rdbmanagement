@@ -8,6 +8,7 @@ import re
 import subprocess
 
 import psycopg2
+import psycopg2.extensions
 import zc.recipe.egg
 
 
@@ -41,6 +42,7 @@ class Recipe(object):
         for dist in ws:
             pkg_resources.working_set.add(dist)
 
+        # CAUTION: self.conn is everywhere expected to be a psycopg2 connection!
         self.conn = psycopg2.connect(self.dsn)
 
         table_names = self.get_table_names()
@@ -79,6 +81,10 @@ class Recipe(object):
                     '%s.%s' % (self.schema, precondition_mod), globals(), 
                     locals(), [precondition_mod])
                 mod.precondition(self.conn)
+                if self.conn.status == \
+                        psycopg2.extensions.STATUS_IN_TRANSACTION:
+                    # abort the transaction of the precondition script
+                    self.conn.rollback()
             ret_code = self.call_psql(
                 pkg_resources.resource_filename(
                     self.schema, 'update%s.sql' % next_generation))
