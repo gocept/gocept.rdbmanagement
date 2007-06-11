@@ -4,7 +4,7 @@ name = 'gocept.rdbmanagement'
 
 setup(
     name=name,
-    version='trunk',
+    version='0.1',
     author='gocept',
     author_email='mail@gocept.com',
     url='https://svn.gocept.com/repos/gocept/' + name,
