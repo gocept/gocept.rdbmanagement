@@ -21,6 +21,7 @@ class Recipe(object):
     Configuration options:
 
       dbname ... database name
+      host ... hostname
       schema ... setuptools resource path of schema generations
       eggs ... list of eggs that are required for the schema path
 
@@ -31,8 +32,8 @@ class Recipe(object):
         self.buildout = buildout
         self.name = name
         self.schema = options['schema']
-        self.dsn = "dbname=%s" % options['dbname']
-        self.psql_options = [options['dbname']]
+        self.dsn = "dbname=%(dbname)s host=%(host)s" % options
+        self.psql_options = ["-h", options['host'], options['dbname']]
 
     def install(self):
         # Use the egg recipe to make sure we have the right eggs available
