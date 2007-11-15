@@ -22,9 +22,8 @@ Part definitions look like::
     eggs = projectegg
     schema = projectegg.schemadir
 
-
-    host = localhost      # XXX not implemented, defaults to localhost
-    user = username       # XXX not implemented, defaults to current user
+    host = localhost
+    user = username
     password = apassword  # XXX not implemented, not given
 
 Where

@@ -32,8 +32,16 @@ class Recipe(object):
         self.buildout = buildout
         self.name = name
         self.schema = options['schema']
+        username = options.get('user')
+        password = options.get('password')
         self.dsn = "dbname=%(dbname)s host=%(host)s" % options
-        self.psql_options = ["-h", options['host'], options['dbname']]
+        self.psql_options = ["-h", options['host']]
+
+        if username:
+            self.dsn += " user=%s" % username
+            self.psql_options.extend(['-U', username])
+
+        self.psql_options.append(options['dbname'])
 
     def install(self):
         # Use the egg recipe to make sure we have the right eggs available
