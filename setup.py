@@ -5,18 +5,31 @@ name = 'gocept.rdbmanagement'
 setup(
     name=name,
     version='0.2dev',
-    author='gocept',
-    author_email='mail@gocept.com',
-    url='https://svn.gocept.com/repos/gocept/' + name,
-    description="""Recipe for managing RDB schemas
-""",
+    author='Michael Howitz, Christian Theune',
+    author_email='mh@gocept.com, ct@gocept.com',
+    url='http://pypi.python.org/pypi/' + name,
+    description="""Recipe for managing RDB schemas""",
+    long_description = (
+        file(os.path.join(os.path.dirname(__file__), 'README.txt')).read()
+        + '\n\n' +
+        file(os.path.join(os.path.dirname(__file__), 'CHANGES.txt')).read()
+        )
     keywords = "buildout rdb",
-    classifiers = ["Framework :: Buildout"],
+    classifiers = [
+        "Framework :: Buildout",
+        "Development Status :: 3 - Alpha",
+        "Topic :: Database",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Zope Public License",
+        "Operating System :: Unix",
+        "Programming Language :: Python",
+        ],
     packages=find_packages('.'),
     package_dir = {'': '.'},
     include_package_data = True,
     zip_safe=False,
-    license='ZPL',
+    license='ZPL 2.1',
     install_requires=[
         'zc.buildout',
         'setuptools',
