@@ -1,3 +1,4 @@
+import os.path
 from setuptools import setup, find_packages
 
 name = 'gocept.rdbmanagement'
@@ -13,7 +14,7 @@ setup(
         file(os.path.join(os.path.dirname(__file__), 'README.txt')).read()
         + '\n\n' +
         file(os.path.join(os.path.dirname(__file__), 'CHANGES.txt')).read()
-        )
+        ),
     keywords = "buildout rdb",
     classifiers = [
         "Framework :: Buildout",
