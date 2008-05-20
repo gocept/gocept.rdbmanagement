@@ -34,7 +34,7 @@ setup(
     install_requires=[
         'zc.buildout',
         'setuptools',
-        'psycopg2==2.0.6',
+        'psycopg2>=2.0.6',
         'zc.recipe.egg'],
     entry_points={
         'zc.buildout': [

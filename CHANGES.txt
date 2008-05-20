@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.1.2
+-----
+
+- allow newer versions than exactely psycopg==2.0.6
+
 0.1.1
 -----
 
