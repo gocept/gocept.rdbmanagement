@@ -1,14 +1,11 @@
-# -*- coding: latin-1 -*-
 # Copyright (c) 2007 gocept gmbh & co. kg
 # See also LICENSE.txt
-# $Id$
 
 import pkg_resources
-import re
-import subprocess
-
 import psycopg2
 import psycopg2.extensions
+import re
+import subprocess
 import zc.recipe.egg
 
 
@@ -51,7 +48,7 @@ class Recipe(object):
         for dist in ws:
             pkg_resources.working_set.add(dist)
 
-        # CAUTION: self.conn is everywhere expected to be a psycopg2 connection!
+        # CAUTION: self.conn is everywhere expected to be a psycopg2 connection
         self.conn = psycopg2.connect(self.dsn)
 
         table_names = self.get_table_names()
@@ -66,11 +63,11 @@ class Recipe(object):
                 self.install_generation_table()
                 self.update_schema(0)
             else:
-                assert pkg_resources.resource_exists(self.schema, 'init.sql'), (
-                    'Initial generation script init.sql not found.')
+                assert (pkg_resources.resource_exists(self.schema, 'init.sql'),
+                        'Initial generation script init.sql not found.')
                 ret_code = self.call_psql(pkg_resources.resource_filename(
                         self.schema, 'init.sql'))
-                
+
                 assert ret_code == 0, 'Initial generation failed.'
                 self.install_generation_table()
                 self.update_generation(self.get_newest_generation())
@@ -87,7 +84,7 @@ class Recipe(object):
             if pkg_resources.resource_exists(
                 self.schema, precondition_mod+".py"):
                 mod = __import__(
-                    '%s.%s' % (self.schema, precondition_mod), globals(), 
+                    '%s.%s' % (self.schema, precondition_mod), globals(),
                     locals(), [precondition_mod])
                 mod.precondition(self.conn)
                 if self.conn.status == \
@@ -105,7 +102,7 @@ class Recipe(object):
 
     def call_psql(self, filename):
         ret_code = subprocess.call(
-            ["psql", "-f", filename, "-v", "ON_ERROR_STOP=true"] + 
+            ["psql", "-f", filename, "-v", "ON_ERROR_STOP=true"] +
             self.psql_options)
         return ret_code
 
@@ -156,4 +153,3 @@ class Recipe(object):
         cur.execute("INSERT INTO %s VALUES (0)" % GENERATION_TABLE)
         cur.close()
         self.conn.commit()
-
