@@ -24,7 +24,7 @@ Part definitions look like::
 
     host = localhost
     user = username
-    password = apassword  # XXX not implemented, not given
+    password = apassword
 
 Where
 
