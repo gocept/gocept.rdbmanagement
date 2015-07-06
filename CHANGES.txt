@@ -1,6 +1,14 @@
 Changes
 =======
 
+1.0
+---
+
+- Implement ability to use a password when accessing the database, requiring at
+  least PostgreSQL 9.0 for this feature.
+
+- Require at least Python 2.7.
+
 0.1.2
 -----
 

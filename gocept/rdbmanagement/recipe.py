@@ -1,6 +1,4 @@
-# Copyright (c) 2007 gocept gmbh & co. kg
-# See also LICENSE.txt
-
+import os
 import pkg_resources
 import psycopg2
 import psycopg2.extensions
@@ -25,13 +23,17 @@ class Recipe(object):
     """
 
     def __init__(self, buildout, name, options):
+        options['location'] = os.path.join(
+            buildout['buildout']['parts-directory'], name)
         self.options = options
         self.buildout = buildout
         self.name = name
         self.schema = options['schema']
         username = options.get('user')
-        password = options.get('password')
+        self.password = options.get('password')
         self.dsn = "dbname=%(dbname)s host=%(host)s" % options
+        if self.password:
+            self.dsn += ' password=%s' % self.password
         self.psql_options = ["-h", options['host']]
 
         if username:
@@ -41,6 +43,8 @@ class Recipe(object):
         self.psql_options.append(options['dbname'])
 
     def install(self):
+        installed = [self.ensure_dir(self.options['location'])]
+        self.configure_password()
         # Use the egg recipe to make sure we have the right eggs available
         # and activate the eggs in the `global` working set.
         egg = zc.recipe.egg.Egg(self.buildout, self.name, self.options)
@@ -63,15 +67,15 @@ class Recipe(object):
                 self.install_generation_table()
                 self.update_schema(0)
             else:
-                assert (pkg_resources.resource_exists(self.schema, 'init.sql'),
-                        'Initial generation script init.sql not found.')
+                assert pkg_resources.resource_exists(self.schema, 'init.sql'),\
+                        'Initial generation script init.sql not found.'
                 ret_code = self.call_psql(pkg_resources.resource_filename(
                         self.schema, 'init.sql'))
 
                 assert ret_code == 0, 'Initial generation failed.'
                 self.install_generation_table()
                 self.update_generation(self.get_newest_generation())
-        return []
+        return installed
 
     def update(self):
         return self.install()
@@ -153,3 +157,19 @@ class Recipe(object):
         cur.execute("INSERT INTO %s VALUES (0)" % GENERATION_TABLE)
         cur.close()
         self.conn.commit()
+
+    def configure_password(self):
+        if not self.password:
+            return
+        path = os.path.join(self.options['location'], 'pgpass')
+        with open(path, 'w') as f:
+            f.write('*:*:*:*:{}'.format(self.password))
+            os.environ['PGPASSFILE'] = path
+            os.chmod(path, 0o600)
+
+    def ensure_dir(self, path):
+        if os.path.exists(path):
+            assert os.path.isdir(path)
+        else:
+            os.mkdir(path)
+        return path

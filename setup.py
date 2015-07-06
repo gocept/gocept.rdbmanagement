@@ -5,9 +5,9 @@ name = 'gocept.rdbmanagement'
 
 setup(
     name=name,
-    version='0.2dev',
-    author='Michael Howitz, Christian Theune',
-    author_email='mh@gocept.com, ct@gocept.com',
+    version='1.0.dev',
+    author='Michael Howitz',
+    author_email='mail@gocept.com',
     url='http://pypi.python.org/pypi/' + name,
     description="""Recipe for managing RDB schemas""",
     long_description = (
@@ -25,7 +25,10 @@ setup(
         "License :: OSI Approved :: Zope Public License",
         "Operating System :: Unix",
         "Programming Language :: Python",
-        ],
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 2 :: Only",
+    ],
     packages=find_packages('.'),
     package_dir = {'': '.'},
     include_package_data = True,
