@@ -4,7 +4,7 @@ name = 'gocept.rdbmanagement'
 
 setup(
     name=name,
-    version='1.1',
+    version='1.2.dev0',
     author='Michael Howitz',
     author_email='mail@gocept.com',
     url='http://pypi.python.org/pypi/' + name,
