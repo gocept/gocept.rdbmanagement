@@ -1,4 +1,3 @@
-import os.path
 from setuptools import setup, find_packages
 
 name = 'gocept.rdbmanagement'
@@ -10,13 +9,13 @@ setup(
     author_email='mail@gocept.com',
     url='http://pypi.python.org/pypi/' + name,
     description="""Recipe for managing RDB schemas""",
-    long_description = (
-        file(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
+    long_description=(
+        file('README.rst').read()
         + '\n\n' +
-        file(os.path.join(os.path.dirname(__file__), 'CHANGES.rst')).read()
-        ),
-    keywords = "buildout rdb",
-    classifiers = [
+        file('CHANGES.rst').read()
+    ),
+    keywords="buildout rdb",
+    classifiers=[
         "Framework :: Buildout",
         "Development Status :: 3 - Alpha",
         "Topic :: Database",
@@ -30,8 +29,8 @@ setup(
         "Programming Language :: Python :: 2 :: Only",
     ],
     packages=find_packages('.'),
-    package_dir = {'': '.'},
-    include_package_data = True,
+    package_dir={'': '.'},
+    include_package_data=True,
     zip_safe=False,
     license='ZPL 2.1',
     install_requires=[
@@ -41,7 +40,7 @@ setup(
         'zc.recipe.egg'],
     entry_points={
         'zc.buildout': [
-             'default = %s.recipe:Recipe' % name,
-             ]
-        },
-    )
+            'default = %s.recipe:Recipe' % name,
+        ]
+    },
+)
