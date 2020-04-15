@@ -11,9 +11,9 @@ setup(
     url='http://pypi.python.org/pypi/' + name,
     description="""Recipe for managing RDB schemas""",
     long_description = (
-        file(os.path.join(os.path.dirname(__file__), 'README.txt')).read()
+        file(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
         + '\n\n' +
-        file(os.path.join(os.path.dirname(__file__), 'CHANGES.txt')).read()
+        file(os.path.join(os.path.dirname(__file__), 'CHANGES.rst')).read()
         ),
     keywords = "buildout rdb",
     classifiers = [
