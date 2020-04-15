@@ -68,9 +68,9 @@ class Recipe(object):
                 self.update_schema(0)
             else:
                 assert pkg_resources.resource_exists(self.schema, 'init.sql'),\
-                        'Initial generation script init.sql not found.'
+                    'Initial generation script init.sql not found.'
                 ret_code = self.call_psql(pkg_resources.resource_filename(
-                        self.schema, 'init.sql'))
+                    self.schema, 'init.sql'))
 
                 assert ret_code == 0, 'Initial generation failed.'
                 self.install_generation_table()
@@ -83,10 +83,10 @@ class Recipe(object):
     def update_schema(self, current_generation):
         next_generation = current_generation + 1
         while pkg_resources.resource_exists(
-            self.schema, 'update%s.sql' % next_generation):
+                self.schema, 'update%s.sql' % next_generation):
             precondition_mod = 'precondition%s' % next_generation
             if pkg_resources.resource_exists(
-                self.schema, precondition_mod+".py"):
+                    self.schema, precondition_mod + ".py"):
                 mod = __import__(
                     '%s.%s' % (self.schema, precondition_mod), globals(),
                     locals(), [precondition_mod])
@@ -111,7 +111,7 @@ class Recipe(object):
         return ret_code
 
     def get_table_names(self):
-        "Get a list of the tables in the database."
+        """Get a list of the tables in the database."""
         cur = self.conn.cursor()
         cur.execute("""
             SELECT c.relname as name
