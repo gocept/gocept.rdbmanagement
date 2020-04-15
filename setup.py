@@ -10,9 +10,9 @@ setup(
     url='http://pypi.python.org/pypi/' + name,
     description="""Recipe for managing RDB schemas""",
     long_description=(
-        file('README.rst').read()
+        open('README.rst').read()
         + '\n\n' +
-        file('CHANGES.rst').read()
+        open('CHANGES.rst').read()
     ),
     keywords="buildout rdb",
     classifiers=[
@@ -26,7 +26,9 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 2 :: Only",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
     packages=find_packages('.'),
     package_dir={'': '.'},

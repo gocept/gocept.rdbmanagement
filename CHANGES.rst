@@ -4,7 +4,7 @@ Changes
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Support Python 3.
 
 
 1.0 (2015-07-06)
