@@ -67,7 +67,8 @@ class Recipe(object):
                 self.install_generation_table()
                 self.update_schema(0)
             else:
-                assert pkg_resources.resource_exists(self.schema, 'init.sql'),\
+                assert pkg_resources.resource_exists(
+                    self.schema, 'init.sql'), \
                     'Initial generation script init.sql not found.'
                 ret_code = self.call_psql(pkg_resources.resource_filename(
                     self.schema, 'init.sql'))
